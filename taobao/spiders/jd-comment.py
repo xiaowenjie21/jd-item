@@ -32,6 +32,7 @@ class JdSpider(scrapy.Spider):
         keywords=keyword  
         
     def start_requests(self):
+    	#下滑加载其他内容
         scriptload = """
            function main(splash)
                local load_element = splash:jsfunc([[
@@ -48,7 +49,9 @@ class JdSpider(scrapy.Spider):
                         }, 800)
                     }}
                 ]])
+                #设置返回资源超时
                 splash.resource_timeout = 3.0
+                #设置返回响应内容超时
                 splash:on_request(function(request)
                      request:set_timeout(3.0)  
                 end)
@@ -78,7 +81,7 @@ class JdSpider(scrapy.Spider):
             })
 
     def parse_next(self, response):
-
+        #点击评论按钮
         scriptclick="""
            function main(splash)
            local click_element = splash:jsfunc([[
@@ -112,7 +115,7 @@ class JdSpider(scrapy.Spider):
             })        
     def parse_item(self,response):
         self.log(response.url)
-        
+        #解析评论数据
         select=response.xpath("//div[@class='comments-item']")
        
         items=[]      
